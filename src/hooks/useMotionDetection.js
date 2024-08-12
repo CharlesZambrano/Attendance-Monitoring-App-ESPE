@@ -1,30 +1,53 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-const useMotionDetection = (videoRef, setMotionDetected) => {
+const useMotionDetection = (videoRef, onMotionDetected) => {
+  const [isMotionDetected, setIsMotionDetected] = useState(false);
+  const prevFrameRef = useRef(null);
+
   useEffect(() => {
     const detectMotion = () => {
-      const context = document.createElement('canvas').getContext('2d');
+      const video = videoRef.current;
+      if (!video) {
+        console.error("Video element not found for motion detection");
+        return;
+      }
 
-      const checkForMotion = () => {
-        if (!videoRef.current) return;
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const context = canvas.getContext('2d');
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-        context.drawImage(videoRef.current, 0, 0, videoRef.current.videoWidth, videoRef.current.videoHeight);
-        const frame = context.getImageData(0, 0, videoRef.current.videoWidth, videoRef.current.videoHeight);
+      const currentFrame = context.getImageData(0, 0, canvas.width, canvas.height);
+      if (prevFrameRef.current) {
+        const diff = calculateFrameDifference(prevFrameRef.current, currentFrame);
+        console.log("Motion difference detected: ", diff);
+        if (diff > 10000) {  // Umbral de detección de movimiento
+          setIsMotionDetected(true);
+          onMotionDetected();
+        }
+      }
 
-        // Aquí puedes implementar una lógica simple de detección de movimiento, como comparar con el fotograma anterior
-        // Por simplicidad, estamos marcando movimiento detectado cada 5 segundos (esto se puede mejorar).
-        setTimeout(() => {
-          setMotionDetected(true);
-        }, 5000);
-      };
-
-      const intervalId = setInterval(checkForMotion, 1000);
-
-      return () => clearInterval(intervalId);
+      prevFrameRef.current = currentFrame;
+      setTimeout(detectMotion, 100);  // Verifica cada 100ms
     };
 
-    detectMotion();
-  }, [videoRef, setMotionDetected]);
+    if (videoRef.current) {
+      detectMotion();
+    } else {
+      console.error("videoRef.current is null during motion detection setup.");
+    }
+  }, [videoRef, onMotionDetected]);
+
+  const calculateFrameDifference = (prevFrame, currentFrame) => {
+    let diff = 0;
+    for (let i = 0; i < prevFrame.data.length; i += 4) {
+      diff += Math.abs(prevFrame.data[i] - currentFrame.data[i]);
+    }
+    return diff;
+  };
+
+  return isMotionDetected;
 };
 
 export default useMotionDetection;
