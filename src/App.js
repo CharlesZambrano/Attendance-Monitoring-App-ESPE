@@ -6,6 +6,7 @@ function App() {
   const [identity, setIdentity] = useState(null);
 
   const handleRecognize = (identity) => {
+    console.log("Identity recognized: ", identity);
     setIdentity(identity);
   };
 
