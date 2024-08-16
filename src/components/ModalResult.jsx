@@ -2,14 +2,38 @@ import React from 'react';
 
 const ModalResult = ({ identity, onClose }) => {
   return (
-    <div style={{
-      position: 'fixed', top: '50%', left: '50%',
-      transform: 'translate(-50%, -50%)', padding: '20px',
-      backgroundColor: 'white', boxShadow: '0px 0px 10px rgba(0,0,0,0.5)',
-      zIndex: 1000
+    <div className="modal-overlay" style={{
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      width: '100%',
+      height: '100%',
+      background: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
     }}>
-      <h2>{identity === "Desconocido" ? "No Reconocido" : `Hola, ${identity}`}</h2>
-      <button onClick={onClose}>Cerrar</button>
+      <div className="modal" style={{
+        background: 'white',
+        padding: '20px',
+        borderRadius: '5px',
+        width: '300px',
+        textAlign: 'center'
+      }}>
+        <h2>{identity === "Desconocido" ? "No Reconocido" : `Hola, ${identity}`}</h2>
+        <button onClick={onClose} style={{
+          backgroundColor: '#00713d',
+          color: 'white',
+          border: 'none',
+          padding: '10px 20px',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          fontSize: '1em',
+          transition: 'background-color 0.3s ease'
+        }}>
+          Cerrar
+        </button>
+      </div>
     </div>
   );
 };

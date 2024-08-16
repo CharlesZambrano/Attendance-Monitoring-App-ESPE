@@ -1,21 +1,45 @@
 import React, { useRef, useState } from 'react';
 import Webcam from 'react-webcam';
-import fondo from '../assets/fondo.jpeg'; // Asegúrate de que la ruta de la imagen es correcta
+import fondo from '../assets/fondo.jpeg';
 import ModalResult from './ModalResult';
+
+const buttonStyle = {
+  marginBottom: '10px',
+  marginRight: '10px',
+  backgroundColor: '#00713d',
+  color: 'white',
+  border: 'none',
+  padding: '10px 20px',
+  borderRadius: '5px',
+  cursor: 'pointer',
+  fontSize: '1em',
+  transition: 'background-color 0.3s ease',
+};
+
+const buttonHoverStyle = {
+  backgroundColor: '#ffb220',
+};
 
 const IdleScreen = () => {
   const webcamRef = useRef(null);
   const [identity, setIdentity] = useState(null);
   const [isCameraVisible, setIsCameraVisible] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
 
   const captureAndRecognize = async () => {
     setIsCameraVisible(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    setIsCapturing(true);
+
+    // Esperar unos segundos para que la cámara tenga tiempo de enfocar
+    await new Promise(resolve => setTimeout(resolve, 3000));
+
     const video = webcamRef.current?.video;
 
     if (!video) {
       console.error("Video element is not ready yet");
       setIsCameraVisible(false);
+      setIsCapturing(false);
       return;
     }
 
@@ -56,6 +80,7 @@ const IdleScreen = () => {
         setIdentity("Error");
       } finally {
         setIsCameraVisible(false);
+        setIsCapturing(false);
       }
     });
   };
@@ -86,39 +111,29 @@ const IdleScreen = () => {
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          backgroundColor: 'rgba(255, 255, 255, 0.8)', // Fondo blanco semitransparente
+          backgroundColor: 'rgba(255, 255, 255, 0.8)',
           padding: '20px',
           borderRadius: '10px',
-          boxShadow: '0px 0px 10px rgba(0,0,0,0.5)'
+          boxShadow: '0px 0px 10px rgba(0,0,0,0.5)',
+          textAlign: 'center'
         }}
       >
         <button
           onClick={captureAndRecognize}
-          style={{
-            padding: '10px 20px',
-            fontSize: '18px',
-            marginRight: '10px',
-            cursor: 'pointer',
-            borderRadius: '5px',
-            border: 'none',
-            backgroundColor: '#007bff',
-            color: 'white'
-          }}
+          style={isHovering ? { ...buttonStyle, ...buttonHoverStyle } : buttonStyle}
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+          disabled={isCapturing} // Desactivar el botón mientras se está capturando
         >
-          REGISTRAR ASISTENCIA
+          {isCapturing ? 'Capturando...' : 'REGISTRAR ASISTENCIA'}
         </button>
 
         <button
           onClick={toggleCameraVisibility}
-          style={{
-            padding: '10px 20px',
-            fontSize: '18px',
-            cursor: 'pointer',
-            borderRadius: '5px',
-            border: 'none',
-            backgroundColor: '#007bff',
-            color: 'white'
-          }}
+          style={isHovering ? { ...buttonStyle, ...buttonHoverStyle } : buttonStyle}
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+          disabled={isCapturing} // Desactivar el botón mientras se está capturando
         >
           {isCameraVisible ? 'OCULTAR CÁMARA' : 'VER CÁMARA'}
         </button>
