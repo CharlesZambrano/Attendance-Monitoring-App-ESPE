@@ -1,0 +1,22 @@
+// src/components/Common/Chip.scss
+.chip {
+  display: inline-block;
+  padding: 10px 20px;
+  margin: 5px;
+  background-color: black;
+  color: white;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  font-weight: bold;
+
+  &:hover {
+    background-color: #555;
+  }
+
+  &--selected {
+    background-color: #00713d;
+    color: white;
+    font-weight: bold;
+  }
+}

@@ -1,15 +1,16 @@
 import React, { useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import fondo from '../../assets/fondo.jpeg';
+import Button from '../../components/Common/Button';
+import ModalResult from '../../components/ModalResult/ModalResult';
 import API_ENDPOINTS from '../../routes/apiEndpoints';
-import ModalResult from '../ModalResult/ModalResult';
 import './IdleScreen.scss';
 
 const IdleScreen = () => {
   const webcamRef = useRef(null);
   const [identity, setIdentity] = useState(null);
   const [isCameraVisible, setIsCameraVisible] = useState(false);
-  const [isCapturing, setIsCapturing] = useState(false); // Eliminado isHovering
+  const [isCapturing, setIsCapturing] = useState(false);
 
   const captureAndRecognize = async () => {
     setIsCameraVisible(true);
@@ -79,21 +80,24 @@ const IdleScreen = () => {
   return (
     <div className="idle-screen" style={{ backgroundImage: `url(${fondo})` }}>
       <div className="centered-box">
-        <button
-          onClick={captureAndRecognize}
-          className="button"
-          disabled={isCapturing} // Desactivar el botón mientras se está capturando
+        <Button
+          onClick={() => console.log('Registro Asistencia Horario Laboral')}
+          disabled={isCapturing}
         >
-          {isCapturing ? 'Capturando...' : 'REGISTRAR ASISTENCIA'}
-        </button>
-
-        <button
+          REGISTRO ASISTENCIA HORARIO LABORAL
+        </Button>
+        <Button
+          onClick={captureAndRecognize}
+          disabled={isCapturing}
+        >
+          REGISTRO ASISTENCIA HORARIO CLASES
+        </Button>
+        <Button
           onClick={toggleCameraVisibility}
-          className="button"
-          disabled={isCapturing} // Desactivar el botón mientras se está capturando
+          disabled={isCapturing}
         >
           {isCameraVisible ? 'OCULTAR CÁMARA' : 'VER CÁMARA'}
-        </button>
+        </Button>
       </div>
 
       {isCameraVisible && (

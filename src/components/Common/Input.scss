@@ -1,0 +1,27 @@
+.form-group {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+    font-weight: normal;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px; // Aumentamos el radio del borde para hacerlo más redondeado
+    font-size: 16px;
+    transition: border-color 0.2s, box-shadow 0.2s; // Añadimos transición para sombra y color del borde
+    background-color: #f8f8f8; // Color de fondo gris claro
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // Sombra para el input
+
+    &:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 8px rgba(0, 123, 255, 0.25); // Sombra azul al enfocar
+      outline: none; // Eliminamos el borde de enfoque predeterminado
+    }
+  }
+}

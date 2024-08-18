@@ -1,10 +1,9 @@
 import React from 'react';
-import IdleScreen from './components/IdleScreen/IdleScreen';
+import IdleScreen from './containers/IdleScreen/IdleScreen';
 
 function App() {
   return (
     <div>
-      <h1>Real-Time Face Recognition</h1>
       <IdleScreen />
     </div>
   );
