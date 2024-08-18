@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import fondo from '../assets/fondo.jpeg';
-import ModalResult from './ModalResult';
+import ModalResult from '../ModalResult/ModalResult';
 
 const buttonStyle = {
   marginBottom: '10px',
