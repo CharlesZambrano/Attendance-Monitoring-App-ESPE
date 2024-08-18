@@ -1,5 +1,5 @@
 import React from 'react';
-import IdleScreen from './components/IdleScreen';
+import IdleScreen from './components/IdleScreen/IdleScreen';
 
 function App() {
   return (

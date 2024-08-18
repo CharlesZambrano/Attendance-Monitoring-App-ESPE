@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
+import API_ENDPOINTS from '../../routes/apiEndpoints'; // Ruta corregida
 
 const CameraFeed = ({ onRecognize }) => {
   const webcamRef = useRef(null);
@@ -30,13 +31,13 @@ const CameraFeed = ({ onRecognize }) => {
         const formData = new FormData();
         formData.append('image', blob);
 
-        fetch('http://localhost:5000/detect', { method: 'POST', body: formData })
+        fetch(API_ENDPOINTS.DETECT, { method: 'POST', body: formData })
           .then(response => response.json())
           .then(data => {
             if (data.faces.length > 0) {
               const face = data.faces[0];
               formData.append('faces', JSON.stringify([face]));
-              fetch('http://localhost:5000/recognize', { method: 'POST', body: formData })
+              fetch(API_ENDPOINTS.RECOGNIZE, { method: 'POST', body: formData })
                 .then(response => response.json())
                 .then(result => {
                   onRecognize(result.identities[0]);

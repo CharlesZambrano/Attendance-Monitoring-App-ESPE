@@ -1,37 +1,20 @@
 import React, { useRef, useState } from 'react';
 import Webcam from 'react-webcam';
-import fondo from '../assets/fondo.jpeg';
+import fondo from '../../assets/fondo.jpeg';
+import API_ENDPOINTS from '../../routes/apiEndpoints';
 import ModalResult from '../ModalResult/ModalResult';
-
-const buttonStyle = {
-  marginBottom: '10px',
-  marginRight: '10px',
-  backgroundColor: '#00713d',
-  color: 'white',
-  border: 'none',
-  padding: '10px 20px',
-  borderRadius: '5px',
-  cursor: 'pointer',
-  fontSize: '1em',
-  transition: 'background-color 0.3s ease',
-};
-
-const buttonHoverStyle = {
-  backgroundColor: '#ffb220',
-};
+import './IdleScreen.scss';
 
 const IdleScreen = () => {
   const webcamRef = useRef(null);
   const [identity, setIdentity] = useState(null);
   const [isCameraVisible, setIsCameraVisible] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
-  const [isCapturing, setIsCapturing] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false); // Eliminado isHovering
 
   const captureAndRecognize = async () => {
     setIsCameraVisible(true);
     setIsCapturing(true);
 
-    // Esperar unos segundos para que la cámara tenga tiempo de enfocar
     await new Promise(resolve => setTimeout(resolve, 3000));
 
     const video = webcamRef.current?.video;
@@ -54,7 +37,7 @@ const IdleScreen = () => {
       formData.append('image', blob);
 
       try {
-        const detectResponse = await fetch('http://localhost:5000/detect', {
+        const detectResponse = await fetch(API_ENDPOINTS.DETECT, {
           method: 'POST',
           body: formData
         });
@@ -64,7 +47,7 @@ const IdleScreen = () => {
           const face = detectData.faces[0];
           formData.append('faces', JSON.stringify([face]));
 
-          const recognizeResponse = await fetch('http://localhost:5000/recognize', {
+          const recognizeResponse = await fetch(API_ENDPOINTS.RECOGNIZE, {
             method: 'POST',
             body: formData
           });
@@ -94,35 +77,11 @@ const IdleScreen = () => {
   };
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        height: '100vh',
-        backgroundImage: `url(${fondo})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        overflow: 'hidden'
-      }}
-    >
-      <div
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: 'rgba(255, 255, 255, 0.8)',
-          padding: '20px',
-          borderRadius: '10px',
-          boxShadow: '0px 0px 10px rgba(0,0,0,0.5)',
-          textAlign: 'center'
-        }}
-      >
+    <div className="idle-screen" style={{ backgroundImage: `url(${fondo})` }}>
+      <div className="centered-box">
         <button
           onClick={captureAndRecognize}
-          style={isHovering ? { ...buttonStyle, ...buttonHoverStyle } : buttonStyle}
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
+          className="button"
           disabled={isCapturing} // Desactivar el botón mientras se está capturando
         >
           {isCapturing ? 'Capturando...' : 'REGISTRAR ASISTENCIA'}
@@ -130,9 +89,7 @@ const IdleScreen = () => {
 
         <button
           onClick={toggleCameraVisibility}
-          style={isHovering ? { ...buttonStyle, ...buttonHoverStyle } : buttonStyle}
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
+          className="button"
           disabled={isCapturing} // Desactivar el botón mientras se está capturando
         >
           {isCameraVisible ? 'OCULTAR CÁMARA' : 'VER CÁMARA'}
@@ -143,14 +100,7 @@ const IdleScreen = () => {
         <Webcam
           ref={webcamRef}
           audio={false}
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '50%',
-            marginTop: '20px'
-          }}
+          className="webcam"
           screenshotFormat="image/jpeg"
         />
       )}
