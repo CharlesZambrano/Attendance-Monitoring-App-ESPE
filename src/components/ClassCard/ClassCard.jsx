@@ -1,3 +1,4 @@
+import { format, fromZonedTime } from 'date-fns-tz'; // Cambiamos la importación a `fromZonedTime`
 import React, { useEffect, useState } from 'react';
 import placeholderIcon from '../../assets/placeholder.png';
 import speechIcon from '../../assets/speech.png'; // Importamos el icono de tardanza
@@ -7,6 +8,7 @@ import './ClassCard.scss';
 const ClassCard = ({ schedule, onCardClick }) => {
   const { CLASS_SCHEDULE_ID, SUBJECT, NRC, TYPE, START_TIME, END_TIME } = schedule;
   const [attendanceInfo, setAttendanceInfo] = useState(null);
+  const timeZone = 'America/Guayaquil'; // La zona horaria de Ecuador
 
   useEffect(() => {
     const fetchAttendanceInfo = async () => {
@@ -29,16 +31,19 @@ const ClassCard = ({ schedule, onCardClick }) => {
     fetchAttendanceInfo();
   }, [CLASS_SCHEDULE_ID]);
 
-  // Función para formatear tiempo de "Hora de inicio" y "Hora de fin" que viene con fecha completa
+  // Función para formatear tiempo de "Hora de inicio" y "Hora de fin"
   const formatFullDateTime = (time) => {
     if (!time) return '';  // Manejo para tiempos nulos
 
-    const date = new Date(time);
-    return date.toLocaleTimeString('es-ES', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
+    console.log("Original time from DB:", time); // Log para ver el tiempo original
+
+    // Convertir tiempo UTC a tiempo local en la zona horaria de Ecuador
+    const utcDate = new Date(time);
+    const zonedDate = fromZonedTime(utcDate, timeZone);
+
+    console.log("Zoned Date for Ecuador:", zonedDate); // Log para ver el objeto Date ajustado a la zona horaria de Ecuador
+
+    return format(zonedDate, 'hh:mm aaaa', { timeZone });
   };
 
   // Función para formatear tiempo de "Hora de registro Inicio" y "Hora de registro Fin" que viene solo con la hora
