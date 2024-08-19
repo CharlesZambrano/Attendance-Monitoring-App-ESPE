@@ -11,10 +11,14 @@ const IdleScreen = () => {
   const [identity, setIdentity] = useState(null);
   const [isCameraVisible, setIsCameraVisible] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [professorInfo, setProfessorInfo] = useState(null);
 
   const captureAndRecognize = async () => {
     setIsCameraVisible(true);
     setIsCapturing(true);
+    setErrorMessage('');
+    setProfessorInfo(null);
 
     await new Promise(resolve => setTimeout(resolve, 3000));
 
@@ -54,14 +58,25 @@ const IdleScreen = () => {
           });
           const recognizeData = await recognizeResponse.json();
 
-          setIdentity(recognizeData.identities[0]);
+          if (recognizeData.identities && recognizeData.identities.length > 0) {
+            const idCard = recognizeData.identities[0];
+            const professorResponse = await fetch(`${API_ENDPOINTS.GET_PROFESSOR_BY_ID_CARD}/${idCard}`);
+            const professorData = await professorResponse.json();
+
+            if (professorResponse.ok) {
+              setProfessorInfo(professorData);
+            } else {
+              setErrorMessage(professorData.error || "Error al obtener la información del profesor.");
+            }
+          } else {
+            setErrorMessage("Desconocido");
+          }
         } else {
-          console.log("No faces detected.");
-          setIdentity("Desconocido");
+          setErrorMessage("No se detectaron rostros válidos.");
         }
       } catch (error) {
         console.error("Error during face detection: ", error);
-        setIdentity("Error");
+        setErrorMessage("Error durante el reconocimiento facial.");
       } finally {
         setIsCameraVisible(false);
         setIsCapturing(false);
@@ -71,6 +86,8 @@ const IdleScreen = () => {
 
   const closeModal = () => {
     setIdentity(null);
+    setErrorMessage('');
+    setProfessorInfo(null);
   };
 
   const toggleCameraVisibility = () => {
@@ -109,7 +126,13 @@ const IdleScreen = () => {
         />
       )}
 
-      {identity && <ModalResult identity={identity} onClose={closeModal} />}
+      {professorInfo || errorMessage ? (
+        <ModalResult
+          professorInfo={professorInfo}
+          errorMessage={errorMessage}
+          onClose={closeModal}
+        />
+      ) : null}
     </div>
   );
 };

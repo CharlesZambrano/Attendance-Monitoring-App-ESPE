@@ -1,14 +1,28 @@
 import React from 'react';
-import './ModalResult.scss'; // Importamos el archivo SCSS
+import './ModalResult.scss';
 
-const ModalResult = ({ identity, onClose }) => {
+const ModalResult = ({ professorInfo, errorMessage, onClose }) => {
   return (
     <div className="modal-overlay">
       <div className="modal">
-        <h2>{identity === "Desconocido" ? "No Reconocido" : `Hola, ${identity}`}</h2>
-        <button onClick={onClose} className="button">
-          Cerrar
-        </button>
+        {errorMessage ? (
+          <h2>{errorMessage}</h2>
+        ) : (
+          <div>
+            <h2>{`${professorInfo.FIRST_NAME} ${professorInfo.LAST_NAME}`}</h2>
+            <p>{professorInfo.UNIVERSITY_ID}</p>
+          </div>
+        )}
+        <div className={`modal-buttons ${errorMessage ? 'single-button' : ''}`}>
+          <button className="button" onClick={onClose}>
+            Cerrar
+          </button>
+          {!errorMessage && (
+            <button className="button" onClick={() => console.log('Continuar')}>
+              Continuar
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
