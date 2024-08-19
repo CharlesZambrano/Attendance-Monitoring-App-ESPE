@@ -5,9 +5,15 @@ import './ClassCard.scss';
 const ClassCard = ({ schedule, onCardClick }) => {
   const { SUBJECT, NRC, TYPE, START_TIME, END_TIME } = schedule;
 
-  // Formatear horas para mostrarlas en el card
+  // Formatear horas en UTC para mostrarlas correctamente en el card
   const formatTime = (time) => {
-    return new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const date = new Date(time);
+    return date.toLocaleTimeString('es-ES', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: 'UTC' // Usamos UTC para evitar la conversión a la zona horaria local
+    });
   };
 
   return (

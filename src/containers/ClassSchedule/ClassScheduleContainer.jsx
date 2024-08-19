@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom'; // Importamos useLocation para obtener el estado de la navegación
+import { useLocation } from 'react-router-dom';
 import fondo from '../../assets/fondo.jpeg';
 import ClassCard from '../../components/ClassCard/ClassCard';
 import ClassScheduleModal from '../../components/ClassScheduleModal/ClassScheduleModal';
@@ -11,7 +11,7 @@ const ClassScheduleContainer = () => {
   const [selectedSchedule, setSelectedSchedule] = useState(null);
   
   const location = useLocation();
-  const professorId = location.state?.professorId; // Obtenemos el professorId desde el estado de la navegación
+  const professorId = location.state?.professorId;
 
   useEffect(() => {
     const fetchSchedules = async () => {
@@ -20,7 +20,9 @@ const ClassScheduleContainer = () => {
         const data = await response.json();
         
         if (response.ok) {
-          setSchedules(data);
+          // Ordenar horarios por hora de inicio (START_TIME) de más temprano a más tarde
+          const sortedSchedules = data.sort((a, b) => new Date(a.START_TIME) - new Date(b.START_TIME));
+          setSchedules(sortedSchedules);
         } else {
           console.error("Error al obtener los horarios de clase:", data.message || data.error);
         }
