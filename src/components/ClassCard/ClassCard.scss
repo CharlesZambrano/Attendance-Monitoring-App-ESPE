@@ -5,10 +5,10 @@
   padding: 16px;
   margin: 16px 0;
   width: 90%; /* Reduce el ancho del card */
-  max-width: 500px; /* Máximo ancho del card */
+  max-width: 700px; /* Máximo ancho del card */
   position: relative;
   transition: transform 0.2s;
-  cursor: auto; /* Cambia el cursor para que no parezca que todo el card es clickeable */
+  text-align: left; /* Alineación a la izquierda */
 }
 
 .class-card:hover {
@@ -36,5 +36,21 @@
   p {
     margin: 8px 0;
     font-size: 1em;
+  }
+
+  .aligned-right {
+    float: right; /* Alineación a la derecha */
+  }
+
+  .late-text {
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .late-icon {
+    width: 16px;
+    height: 16px;
+    margin-left: 4px;
   }
 }
