@@ -11,11 +11,11 @@ const ClassCard = ({ schedule, onCardClick }) => {
   };
 
   return (
-    <div className="class-card" onClick={onCardClick}>
+    <div className="class-card">
       <div className="card-header">
         <img src={placeholderIcon} alt="Icono" className="icon" onClick={(e) => {
           e.stopPropagation(); // Evita que el click en el icono abra el card
-          onCardClick();
+          onCardClick(); // Solo el icono abre el modal
         }} />
       </div>
       <div className="card-content">

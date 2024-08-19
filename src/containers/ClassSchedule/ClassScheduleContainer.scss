@@ -1,11 +1,15 @@
 .class-schedule-container {
-    padding: 20px;
-    color: #333;
-  }
-  
-  .class-schedule-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
+  padding: 20px;
+  color: #333;
+  min-height: 100vh; /* Asegura que el fondo cubra toda la pantalla */
+  background-size: cover; /* Ajusta el tamaño del fondo para cubrir la pantalla */
+  background-position: center; /* Centra el fondo */
+  background-repeat: no-repeat; /* Evita que se repita el fondo */
+}
+
+.class-schedule-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra horizontalmente los cards */
+  gap: 20px;
+}
