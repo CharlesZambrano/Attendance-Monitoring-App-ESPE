@@ -14,10 +14,12 @@ const ClassCard = ({ schedule, onCardClick }) => {
         const response = await fetch(`${API_ENDPOINTS.GET_CLASS_SCHEDULE_ATTENDANCE}/${CLASS_SCHEDULE_ID}`);
         const data = await response.json();
 
-        if (response.ok) {
+        if (response.ok && data.length > 0) {
           setAttendanceInfo(data[0]); // Usamos el primer registro, asumir que solo se tiene uno por clase
-        } else {
+        } else if (!response.ok) {
           console.error("Error al obtener la asistencia:", data.message || data.error);
+        } else {
+          console.warn(`No se encontraron registros de asistencia para el CLASS_SCHEDULE_ID ${CLASS_SCHEDULE_ID}`);
         }
       } catch (error) {
         console.error("Error en la solicitud de asistencia:", error);
@@ -54,12 +56,9 @@ const ClassCard = ({ schedule, onCardClick }) => {
   };
 
   return (
-    <div className="class-card">
+    <div className="class-card" onClick={onCardClick}>
       <div className="card-header">
-        <img src={placeholderIcon} alt="Icono" className="icon" onClick={(e) => {
-          e.stopPropagation();
-          onCardClick(); // Solo el icono abre el modal
-        }} />
+        <img src={placeholderIcon} alt="Icono" className="icon" />
       </div>
       <div className="card-content">
         <h3>{SUBJECT}</h3>

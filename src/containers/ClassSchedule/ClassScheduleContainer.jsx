@@ -1,8 +1,10 @@
+import { format } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import fondo from '../../assets/fondo.jpeg';
 import ClassCard from '../../components/ClassCard/ClassCard';
-import ClassScheduleModal from '../../components/ClassScheduleModal/ClassScheduleModal';
+import ModalResult from '../../components/Common/ModalResult';
 import API_ENDPOINTS from '../../routes/apiEndpoints';
 import './ClassScheduleContainer.scss';
 
@@ -10,7 +12,8 @@ const ClassScheduleContainer = () => {
   const [schedules, setSchedules] = useState([]);
   const [selectedSchedule, setSelectedSchedule] = useState(null);
   const [attendanceResult, setAttendanceResult] = useState(null); // Guardar el resultado del registro de asistencia
-  
+  const [isModalOpen, setIsModalOpen] = useState(false); // Controlar la visibilidad del modal
+
   const location = useLocation();
   const professorId = location.state?.professorId;
 
@@ -35,11 +38,16 @@ const ClassScheduleContainer = () => {
 
   const handleCardClick = async (schedule) => {
     const currentDate = new Date();
+
+    // Convertimos la fecha y hora actuales a la zona horaria de Ecuador
+    const timeZone = 'America/Guayaquil';
+    const zonedDate = toZonedTime(currentDate, timeZone);
+
     const requestBody = {
       CLASS_SCHEDULE_ID: schedule.CLASS_SCHEDULE_ID,
       PROFESSOR_ID: professorId,
-      REGISTER_DATE: currentDate.toISOString().split('T')[0], // YYYY-MM-DD
-      TIME: currentDate.toISOString() // Fecha y hora en formato ISO
+      REGISTER_DATE: format(zonedDate, 'yyyy-MM-dd'), // Formato de la fecha con la zona horaria de Ecuador
+      TIME: format(zonedDate, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") // Fecha y hora en formato ISO UTC con el sufijo 'Z'
     };
 
     try {
@@ -58,8 +66,12 @@ const ClassScheduleContainer = () => {
         console.error("Error al registrar la asistencia:", result.message || result.error);
       }
 
+      setIsModalOpen(true); // Mostrar el modal tanto para éxito como para error
+
     } catch (error) {
       console.error("Error en la solicitud de registro de asistencia:", error);
+      setAttendanceResult({ error: "Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde." });
+      setIsModalOpen(true);
     }
 
     setSelectedSchedule(schedule);
@@ -68,6 +80,7 @@ const ClassScheduleContainer = () => {
   const handleCloseModal = () => {
     setSelectedSchedule(null);
     setAttendanceResult(null); // Limpiar el resultado al cerrar el modal
+    setIsModalOpen(false); // Cerrar el modal
   };
 
   return (
@@ -81,11 +94,10 @@ const ClassScheduleContainer = () => {
           />
         ))}
       </div>
-      {attendanceResult && (
-        <ClassScheduleModal
-          schedule={selectedSchedule}
+      {isModalOpen && attendanceResult && (
+        <ModalResult
+          result={attendanceResult}
           onClose={handleCloseModal}
-          result={attendanceResult} // Pasar el resultado al modal
         />
       )}
     </div>
