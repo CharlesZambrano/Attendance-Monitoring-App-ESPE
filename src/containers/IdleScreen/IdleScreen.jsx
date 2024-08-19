@@ -8,7 +8,6 @@ import './IdleScreen.scss';
 
 const IdleScreen = () => {
   const webcamRef = useRef(null);
-  const [identity, setIdentity] = useState(null);
   const [isCameraVisible, setIsCameraVisible] = useState(false);
   const [isCapturing, setIsCapturing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -20,7 +19,7 @@ const IdleScreen = () => {
     setErrorMessage('');
     setProfessorInfo(null);
 
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise(resolve => setTimeout(resolve, 1500));
 
     const video = webcamRef.current?.video;
 
@@ -75,7 +74,7 @@ const IdleScreen = () => {
           setErrorMessage("No se detectaron rostros válidos.");
         }
       } catch (error) {
-        console.error("Error during face detection: ", error);
+        console.error("Error durante el reconocimiento facial: ", error);
         setErrorMessage("Error durante el reconocimiento facial.");
       } finally {
         setIsCameraVisible(false);
@@ -85,7 +84,6 @@ const IdleScreen = () => {
   };
 
   const closeModal = () => {
-    setIdentity(null);
     setErrorMessage('');
     setProfessorInfo(null);
   };

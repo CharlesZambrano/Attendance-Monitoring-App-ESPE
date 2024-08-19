@@ -1,0 +1,39 @@
+.class-card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    margin: 16px 0;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s;
+  }
+  
+  .class-card:hover {
+    transform: scale(1.02);
+  }
+  
+  .card-header {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+  
+  .icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+  }
+  
+  .card-content {
+    h3 {
+      margin: 0;
+      font-size: 1.2em;
+    }
+  
+    p {
+      margin: 8px 0;
+      font-size: 1em;
+    }
+  }
+  
