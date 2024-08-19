@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importamos useNavigate para la navegación
 import Webcam from 'react-webcam';
 import fondo from '../../assets/fondo.jpeg';
 import Button from '../../components/Common/Button';
@@ -12,6 +13,8 @@ const IdleScreen = () => {
   const [isCapturing, setIsCapturing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [professorInfo, setProfessorInfo] = useState(null);
+
+  const navigate = useNavigate(); // Creamos una instancia de useNavigate
 
   const captureAndRecognize = async () => {
     setIsCameraVisible(true);
@@ -88,6 +91,12 @@ const IdleScreen = () => {
     setProfessorInfo(null);
   };
 
+  const handleContinue = () => {
+    if (professorInfo) {
+      navigate('/class-schedule', { state: { professorId: professorInfo.PROFESSOR_ID } });
+    }
+  };
+
   const toggleCameraVisibility = () => {
     setIsCameraVisible(prevState => !prevState);
   };
@@ -129,6 +138,7 @@ const IdleScreen = () => {
           professorInfo={professorInfo}
           errorMessage={errorMessage}
           onClose={closeModal}
+          onContinue={handleContinue} // Pasamos handleContinue a ModalResult
         />
       ) : null}
     </div>

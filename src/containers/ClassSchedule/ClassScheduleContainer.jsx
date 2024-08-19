@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom'; // Importamos useLocation para obtener el estado de la navegación
 import fondo from '../../assets/fondo.jpeg';
 import ClassCard from '../../components/ClassCard/ClassCard';
-import ClassScheduleModal from '../../components/ClassScheduleModal/ClassScheduleModal'; // Importando ClassScheduleModal
+import ClassScheduleModal from '../../components/ClassScheduleModal/ClassScheduleModal';
 import API_ENDPOINTS from '../../routes/apiEndpoints';
 import './ClassScheduleContainer.scss';
 
-const ClassScheduleContainer = ({ professorId }) => {
+const ClassScheduleContainer = () => {
   const [schedules, setSchedules] = useState([]);
   const [selectedSchedule, setSelectedSchedule] = useState(null);
+  
+  const location = useLocation();
+  const professorId = location.state?.professorId; // Obtenemos el professorId desde el estado de la navegación
 
   useEffect(() => {
     const fetchSchedules = async () => {

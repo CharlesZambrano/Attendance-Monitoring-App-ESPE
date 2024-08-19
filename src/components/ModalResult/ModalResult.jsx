@@ -1,7 +1,7 @@
 import React from 'react';
 import './ModalResult.scss';
 
-const ModalResult = ({ professorInfo, errorMessage, onClose }) => {
+const ModalResult = ({ professorInfo, errorMessage, onClose, onContinue }) => {
   return (
     <div className="modal-overlay">
       <div className="modal">
@@ -18,7 +18,7 @@ const ModalResult = ({ professorInfo, errorMessage, onClose }) => {
             Cerrar
           </button>
           {!errorMessage && (
-            <button className="button" onClick={() => console.log('Continuar')}>
+            <button className="button" onClick={onContinue}>
               Continuar
             </button>
           )}
