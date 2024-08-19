@@ -1,14 +1,12 @@
-import { format, fromZonedTime } from 'date-fns-tz'; // Cambiamos la importación a `fromZonedTime`
 import React, { useEffect, useState } from 'react';
 import placeholderIcon from '../../assets/placeholder.png';
-import speechIcon from '../../assets/speech.png'; // Importamos el icono de tardanza
+import speechIcon from '../../assets/speech.png'; // Import tardiness icon
 import API_ENDPOINTS from '../../routes/apiEndpoints';
 import './ClassCard.scss';
 
 const ClassCard = ({ schedule, onCardClick }) => {
   const { CLASS_SCHEDULE_ID, SUBJECT, NRC, TYPE, START_TIME, END_TIME } = schedule;
   const [attendanceInfo, setAttendanceInfo] = useState(null);
-  const timeZone = 'America/Guayaquil'; // La zona horaria de Ecuador
 
   useEffect(() => {
     const fetchAttendanceInfo = async () => {
@@ -17,38 +15,37 @@ const ClassCard = ({ schedule, onCardClick }) => {
         const data = await response.json();
 
         if (response.ok && data.length > 0) {
-          setAttendanceInfo(data[0]); // Usamos el primer registro, asumir que solo se tiene uno por clase
+          setAttendanceInfo(data[0]); // Assume only one attendance record per class
         } else if (!response.ok) {
-          console.error("Error al obtener la asistencia:", data.message || data.error);
+          console.error("Error fetching attendance:", data.message || data.error);
         } else {
-          console.warn(`No se encontraron registros de asistencia para el CLASS_SCHEDULE_ID ${CLASS_SCHEDULE_ID}`);
+          console.warn(`No attendance records found for CLASS_SCHEDULE_ID ${CLASS_SCHEDULE_ID}`);
         }
       } catch (error) {
-        console.error("Error en la solicitud de asistencia:", error);
+        console.error("Error fetching attendance:", error);
       }
     };
 
     fetchAttendanceInfo();
   }, [CLASS_SCHEDULE_ID]);
 
-  // Función para formatear tiempo de "Hora de inicio" y "Hora de fin"
+  // Function to manually adjust and format the time
   const formatFullDateTime = (time) => {
-    if (!time) return '';  // Manejo para tiempos nulos
+    if (!time) return '';  // Handle null times
 
-    console.log("Original time from DB:", time); // Log para ver el tiempo original
+    const date = new Date(time);
+    date.setHours(date.getHours() - 7); // Manually subtract 5 hours to adjust for Ecuador timezone
 
-    // Convertir tiempo UTC a tiempo local en la zona horaria de Ecuador
-    const utcDate = new Date(time);
-    const zonedDate = fromZonedTime(utcDate, timeZone);
-
-    console.log("Zoned Date for Ecuador:", zonedDate); // Log para ver el objeto Date ajustado a la zona horaria de Ecuador
-
-    return format(zonedDate, 'hh:mm aaaa', { timeZone });
+    return date.toLocaleTimeString('es-ES', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
   };
 
-  // Función para formatear tiempo de "Hora de registro Inicio" y "Hora de registro Fin" que viene solo con la hora
+  // Function to format "Record Start Time" and "Record End Time" that comes only with time
   const formatTimeOnly = (time) => {
-    if (!time) return '';  // Manejo para tiempos nulos
+    if (!time) return '';  // Handle null times
 
     const [hours, minutes, seconds] = time.split(':');
     const date = new Date();
@@ -63,7 +60,7 @@ const ClassCard = ({ schedule, onCardClick }) => {
   return (
     <div className="class-card" onClick={onCardClick}>
       <div className="card-header">
-        <img src={placeholderIcon} alt="Icono" className="icon" />
+        <img src={placeholderIcon} alt="Icon" className="icon" />
       </div>
       <div className="card-content">
         <h3>{SUBJECT}</h3>

@@ -10,7 +10,6 @@ import './ClassScheduleContainer.scss';
 
 const ClassScheduleContainer = () => {
   const [schedules, setSchedules] = useState([]);
-  const [selectedSchedule, setSelectedSchedule] = useState(null);
   const [attendanceResult, setAttendanceResult] = useState(null); // Guardar el resultado del registro de asistencia
   const [isModalOpen, setIsModalOpen] = useState(false); // Controlar la visibilidad del modal
 
@@ -73,12 +72,9 @@ const ClassScheduleContainer = () => {
       setAttendanceResult({ error: "Ocurrió un error inesperado. Por favor, intenta de nuevo más tarde." });
       setIsModalOpen(true);
     }
-
-    setSelectedSchedule(schedule);
   };
 
   const handleCloseModal = () => {
-    setSelectedSchedule(null);
     setAttendanceResult(null); // Limpiar el resultado al cerrar el modal
     setIsModalOpen(false); // Cerrar el modal
   };
